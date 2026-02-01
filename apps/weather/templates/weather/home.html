@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Reset */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(to right, #74ebd5, #acb6e5);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 400px;
+            width: 100%;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            font-size: 2rem;
+            color: #333;
+        }
+
+        form {
+            display: flex;
+            margin-bottom: 20px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 10px 15px;
+            border: 2px solid #ccc;
+            border-radius: 8px 0 0 8px;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        input[type="text"]:focus {
+            border-color: #74ebd5;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            background: #74ebd5;
+            color: #fff;
+            font-weight: bold;
+            border-radius: 0 8px 8px 0;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #4ac0c9;
+        }
+
+        .weather-info {
+            text-align: left;
+            background: #f7f7f7;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .weather-info h2 {
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+            color: #555;
+        }
+
+        .weather-info p {
+            margin: 5px 0;
+            font-size: 1rem;
+            color: #333;
+        }
+
+        .error {
+            color: #e74c3c;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+
+        @media (max-width: 480px) {
+            .container { padding: 20px; }
+            input[type="text"], button { font-size: 0.9rem; padding: 8px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌤️ Weather Platform</h1>
+
+        <form method="POST">
+            {% csrf_token %}
+            <input type="text" name="city" placeholder="Enter city name" required>
+            <button type="submit">Get Weather</button>
+        </form>
+
+        {% if weather.main %}
+            <div class="weather-info">
+                <h2>{{ city }}</h2>
+                <p><strong>Temperature:</strong> {{ weather.main.temp }} °C</p>
+                <p><strong>Feels Like:</strong> {{ weather.main.feels_like }} °C</p>
+                <p><strong>Min Temperature:</strong> {{ weather.main.temp_min }} °C</p>
+                <p><strong>Max Temperature:</strong> {{ weather.main.temp_max }} °C</p>
+                <p><strong>Condition:</strong> {{ weather.weather.0.description }}</p>
+                <p><strong>Humidity:</strong> {{ weather.main.humidity }}%</p>
+                <p><strong>Wind Speed:</strong> {{ weather.wind.speed }} m/s</p>
+            </div>
+        {% elif weather.error %}
+            <p class="error">{{ weather.error }}</p>
+        {% endif %}
+    </div>
+</body>
+</html>
