@@ -19,5 +19,6 @@ from django.urls import path,include #"include" included because url from other 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path("",include("apps.weather.urls"))
+    path("",include("apps.weather.urls")),
+    path("accounts/", include("apps.accounts.urls")),
 ]

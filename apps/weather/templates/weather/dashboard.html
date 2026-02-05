@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Weather Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* Reset & body */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            min-height: 100vh;
+            color: #fff;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        /* Logout top-right */
+        .logout-container {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logout-container span {
+            font-weight: 500;
+        }
+
+        .logout-container a {
+            padding: 8px 18px;
+            border-radius: 25px;
+            background: linear-gradient(45deg, #ff6a00, #ee0979);
+            color: #fff;
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: 0.3s;
+        }
+
+        .logout-container a:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(255,105,180,0.4);
+        }
+
+        /* Main container */
+        .container {
+            width: 100%;
+            max-width: 900px;
+            margin-top: 80px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 10px rgba(0,0,0,0.2);
+        }
+
+        /* Weather search form */
+        .weather-form {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 25px;
+            gap: 10px;
+        }
+
+        .weather-form input {
+            flex: 1;
+            padding: 14px 20px;
+            border-radius: 50px;
+            border: none;
+            outline: none;
+            background: rgba(255,255,255,0.15);
+            color: #fff;
+            font-size: 1rem;
+        }
+
+        .weather-form input::placeholder { color: rgba(255,255,255,0.7); }
+
+        .weather-form button {
+            padding: 14px 30px;
+            border: none;
+            border-radius: 50px;
+            background: linear-gradient(45deg, #ff6a00, #ee0979);
+            color: #fff;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .weather-form button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(255,105,180,0.4);
+        }
+
+        /* Weather info card */
+        .weather-info {
+            background: rgba(255,255,255,0.1);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 25px rgba(0,0,0,0.2);
+            border: 1px solid rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            text-align: center;
+        }
+
+        .weather-info h2 { margin-bottom: 15px; font-size: 2rem; }
+        .weather-info p { margin: 6px 0; font-size: 1rem; }
+
+        /* Forecast grid */
+        .forecast {
+            margin-bottom: 25px;
+        }
+
+        .forecast h2 {
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 1.8rem;
+        }
+
+        .forecast-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 15px;
+        }
+
+        .forecast-card {
+            background: rgba(255,255,255,0.15);
+            padding: 15px;
+            border-radius: 15px;
+            text-align: center;
+            font-size: 0.95rem;
+            transition: 0.3s;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .forecast-card:hover {
+            background: rgba(255,255,255,0.25);
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        .forecast-card img {
+            width: 60px;
+            height: 60px;
+            margin: 10px 0;
+        }
+
+        /* Save favorites button */
+        .save-btn {
+            padding: 10px 25px;
+            border: none;
+            border-radius: 30px;
+            background: linear-gradient(45deg, #ff6a00, #ee0979);
+            color: #fff;
+            font-weight: bold;
+            cursor: pointer;
+            margin-bottom: 20px;
+            transition: 0.3s;
+        }
+
+        .save-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(255,105,180,0.4);
+        }
+
+        /* Favorites list */
+        .favorites {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+
+        .favorite-pill {
+            padding: 8px 16px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 25px;
+            border: 1px solid rgba(255,255,255,0.2);
+            font-size: 0.9rem;
+        }
+
+        /* Error message */
+        .error {
+            color: #ff4b5c;
+            font-weight: bold;
+            margin-top: 15px;
+            text-align: center;
+            text-shadow: 1px 1px 4px rgba(0,0,0,0.3);
+        }
+
+        @media (max-width: 480px) {
+            .weather-form { flex-direction: column; }
+            .forecast-grid { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Top-right logout -->
+<div class="logout-container">
+    {% if user.is_authenticated %}
+        <span>👋 {{ user.username }}</span>
+        <a href="{% url 'logout' %}">Logout</a>
+    {% endif %}
+</div>
+
+<div class="container">
+    <h1>🌤️ Weather Dashboard</h1>
+
+    <!-- Search city -->
+    <form class="weather-form" method="POST">
+        {% csrf_token %}
+        <input type="text" name="city" placeholder="Enter city name" required>
+        <button type="submit">Get Weather</button>
+    </form>
+
+    <!-- Save favorite -->
+    {% if weather and weather.main %}
+    <form method="POST" action="/save/" style="text-align:center;">
+        {% csrf_token %}
+        <input type="hidden" name="city" value="{{ city }}">
+        <button class="save-btn">⭐ Save to Favorites</button>
+    </form>
+    {% endif %}
+
+    <!-- Weather info -->
+    {% if weather %}
+        {% if weather.main %}
+        <div class="weather-info">
+            <h2>{{ city }}</h2>
+            <p><strong>Temperature:</strong> {{ weather.main.temp }} °C</p>
+            <p><strong>Feels Like:</strong> {{ weather.main.feels_like }} °C</p>
+            <p><strong>Min Temperature:</strong> {{ weather.main.temp_min }} °C</p>
+            <p><strong>Max Temperature:</strong> {{ weather.main.temp_max }} °C</p>
+            <p><strong>Condition:</strong> {{ weather.weather.0.description }}</p>
+            <p><strong>Humidity:</strong> {{ weather.main.humidity }}%</p>
+            <p><strong>Wind Speed:</strong> {{ weather.wind.speed }} m/s</p>
+        </div>
+        {% elif weather.error %}
+            <p class="error">{{ weather.error }}</p>
+        {% endif %}
+    {% endif %}
+
+    <!-- Forecast -->
+    {% if forecast and forecast.list %}
+    <div class="forecast">
+        <h2>Forecast</h2>
+        <div class="forecast-grid">
+            {% for item in forecast.list %}
+            <div class="forecast-card">
+                <p><strong>{{ item.dt_txt|date:"D M j H:i" }}</strong></p>
+                <img src="https://openweathermap.org/img/wn/{{ item.weather.0.icon }}@2x.png" alt="{{ item.weather.0.description }}">
+                <p>{{ item.main.temp }} °C</p>
+                <p>{{ item.weather.0.description }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Favorites -->
+    <div class="favorites">
+        {% if favorites %}
+            {% for city in favorites %}
+                <a href="?city={{ city.city }}" class="favorite-pill" style="text-decoration: none; color: inherit;">{{ city.city }}</a>
+            {% endfor %}
+        {% else %}
+            <p class="error">No favorite cities yet!</p>
+        {% endif %}
+    </div>
+
+</div>
+</body>
+</html>

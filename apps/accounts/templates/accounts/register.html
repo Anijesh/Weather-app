@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Account</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Roboto', sans-serif;
+            color: #fff;
+        }
+
+        .auth-card {
+            width: 380px;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(16px);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.35);
+            text-align: center;
+        }
+
+        .auth-card h2 {
+            margin-bottom: 25px;
+        }
+
+        .auth-card input {
+            width: 100%;
+            padding: 14px;
+            margin-bottom: 14px;
+            border-radius: 12px;
+            border: none;
+            outline: none;
+            background: rgba(255,255,255,0.15);
+            color: #fff;
+        }
+
+        .auth-card button {
+            width: 100%;
+            padding: 14px;
+            border-radius: 30px;
+            border: none;
+            background: linear-gradient(45deg, #ff6a00, #ee0979);
+            color: #fff;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .auth-card button:hover {
+            transform: scale(1.05);
+        }
+
+        .errors {
+            color: #ff4b5c;
+            font-size: 0.85rem;
+            text-align: left;
+            margin-bottom: 10px;
+        }
+
+        .switch {
+            margin-top: 18px;
+            font-size: 0.9rem;
+        }
+
+        .switch a {
+            color: #ffd1f3;
+            text-decoration: none;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="auth-card">
+    <h2>Create Account ✨</h2>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        {% for field in form %}
+            <div>
+                {{ field }}
+                {% if field.errors %}
+                    <div class="errors">{{ field.errors }}</div>
+                {% endif %}
+            </div>
+        {% endfor %}
+
+        <button>Create Account</button>
+    </form>
+
+    <p class="switch">
+        Already have an account?
+        <a href="{% url 'login' %}">Login</a>
+    </p>
+</div>
+
+</body>
+</html>
